@@ -3,11 +3,11 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Iterations ("Iterations", Int) = 1
-        _Scaling ("Scaling", Int) = 1
-        _TimeSpeed("TimeSpeed", Int) = 1
-        _XOff("X Offset", Int) = 1
-        _YOff("Y Offset", Int) = 1
+        _Iterations ("Iterations", Float) = 1
+        _Scaling ("Scaling", Float) = 1
+        _TimeSpeed("TimeSpeed", Float) = 1
+        _XOff("X Offset", Float) = 1
+        _YOff("Y Offset", Float) = 1
         _ZoomIn ("Zoom In", Float) = 1.
     }
     SubShader
@@ -24,8 +24,6 @@
             #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
-
-            #define INF 2.
 
             struct appdata
             {
@@ -59,32 +57,22 @@
             }
 
 
-            float2 addComplex(float2 a, float2 b)
-            {
-                return float2(a.x + b.x, a.y + b.y);
-            }
-
             float2 multComplex(float2 a, float2 b)
             {
                 return float2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
             }
 
-            float mandelbrot(float2 x, int n)
+            float mandelbrot(float2 c, int n)
             {
                 float2 z = float2(.0, .0);
-                for (int i = 0; i < n; i++)
+                float i = 0;
+                for (i = 0; i < n; i++)
                 {
-                    if (abs(z.x) > INF)
-                    {
-                        return float(i) / float(n);
-                    }
-                    else
-                    {
-                        z = multComplex(z, z);
-                        z = addComplex(z, x);
-                    }
+                    z = multComplex(z, z) + c;
+                    if (length(z) > 2)
+                        break;
                 }
-                return z.x / INF;
+                return i / n;
             }
 
 
@@ -109,7 +97,9 @@
                 float2 pos = uv.xy + float2(xShift, yShift) * scaling;
 
                 float m = mandelbrot(pos / scaling, iterations);
-                float3 col = float3(hsv2rgb(float3(m, 1., 1.)));
+                float3 col = float3(1., 1., 1.);
+                //col = float3(hsv2rgb(float3(m, 1., 1.)));
+                col = float3(hsv2rgb(float3(sin(m), 1., 1.)));
                 // Output to screen
                 return float4(col,1.0);
             }

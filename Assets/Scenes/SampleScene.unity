@@ -314,6 +314,6 @@ MonoBehaviour:
   iterations: 800
   scaling: 1
   timeSpeed: 1
-  xOff: 3705
+  xOff: 3706
   yOff: 1600
-  zoomIn: 1
+  zoomIn: 0
